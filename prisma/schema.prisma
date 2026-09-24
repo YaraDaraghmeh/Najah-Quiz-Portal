@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String         @id @default(cuid())
+  role         String         // "ADMIN" | "TEACHER" | "STUDENT"
+  name         String
+  username     String         @unique
+  passwordHash String
+  classId      String?
+  class        Class?         @relation("StudentClass", fields: [classId], references: [id], onDelete: SetNull)
+  
+  // Relations
+  teacherClasses TeacherClass[]
+  createdQuizzes Quiz[]         @relation("TeacherQuizzes")
+  attempts       Attempt[]
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Class {
+  id             String         @id @default(cuid())
+  name           String         @unique // "10A", "10B", "11A"
+  students       User[]         @relation("StudentClass")
+  teacherClasses TeacherClass[]
+  quizClasses    QuizClass[]
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model TeacherClass {
+  id        String   @id @default(cuid())
+  teacherId String
+  classId   String
+  teacher   User     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([teacherId, classId])
+}
+
+model Quiz {
+  id               String      @id @default(cuid())
+  title            String
+  language         String      @default("ar") // 'ar' | 'en'
+  timeLimitMinutes Int         @default(20)
+  opensAt          DateTime
+  closesAt         DateTime
+  negativeMarking  Boolean     @default(false)
+  penaltyPercent   Float       @default(25)
+  createdById      String
+  createdBy        User        @relation("TeacherQuizzes", fields: [createdById], references: [id], onDelete: Cascade)
+
+  classes          QuizClass[]
+  questions        Question[]
+  attempts         Attempt[]
+
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+model QuizClass {
+  id      String @id @default(cuid())
+  quizId  String
+  classId String
+  quiz    Quiz   @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  class   Class  @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([quizId, classId])
+}
+
+model Question {
+  id        String    @id @default(cuid())
+  quizId    String
+  quiz      Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  text      String
+  points    Float     @default(1.0)
+  order     Int
+  options   Option[]
+  answers   Answer[]
+
+  createdAt DateTime  @default(now())
+}
+
+model Option {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String
+  isCorrect  Boolean  @default(false)
+  order      Int
+  answers    Answer[]
+}
+
+model Attempt {
+  id          String    @id @default(cuid())
+  studentId   String
+  quizId      String
+  student     User      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  quiz        Quiz      @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  startedAt   DateTime  @default(now())
+  deadlineAt  DateTime
+  submittedAt DateTime?
+  score       Float?
+  maxScore    Float
+  status      String    @default("IN_PROGRESS") // "IN_PROGRESS" | "SUBMITTED" | "AUTO_FINALIZED"
+
+  answers     Answer[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([studentId, quizId])
+}
+
+model Answer {
+  id               String   @id @default(cuid())
+  attemptId        String
+  questionId       String
+  selectedOptionId String?
+  attempt          Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question         Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOption   Option?  @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+  answeredAt       DateTime @default(now())
+
+  @@unique([attemptId, questionId])
+}

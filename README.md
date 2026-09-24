@@ -90,7 +90,7 @@ npm run seed
 
 ## Stages how the project developed 
 
-- **Stage 1 **: Project setup, Prisma schema, SQLite file DB, realistic Amman seed data, server-authoritative timer logic, pure scoring function, 12 Vitest tests, Dockerfile, docker-compose, and documentation.
+- **Stage 1**: Project setup, Prisma schema, SQLite file DB, realistic Amman seed data, server-authoritative timer logic, pure scoring function, 12 Vitest tests, Dockerfile, docker-compose, and documentation.
 - **Stage 2**: Authentication & role-based access control.
 - **Stage 3**: Scoring & attempt lifecycle APIs.
 - **Stage 4**: Student mobile quiz taking flow with sticky timer.
