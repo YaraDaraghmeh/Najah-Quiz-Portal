@@ -23,6 +23,28 @@ Visit `http://localhost:3000` in your browser.
 
 ---
 
+## Environment Variables
+
+The application is configured using environment variables defined in a `.env` file (see [`.env.example`](.env.example)) or passed directly to Docker / runtime environment:
+
+| Variable | Required | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `DATABASE_URL` | Yes | `file:./dev.db` | SQLite database connection string used by Prisma (`file:/app/data/dev.db` inside Docker). |
+| `SESSION_SECRET` | Recommended | `najah-amman-tutoring-center-secret-key-2026` | Secret key used for signing and verifying HMAC SHA-256 session tokens. In production, provide a strong random string. |
+| `PORT` | No | `3000` | Port on which the Express application server listens. |
+| `NODE_ENV` | No | `development` | Runtime mode (`development` or `production`). |
+
+### Example `.env` Configuration
+
+```env
+DATABASE_URL="file:./dev.db"
+SESSION_SECRET="najah-amman-tutoring-center-secret-key-2026"
+PORT=3000
+NODE_ENV=development
+```
+
+---
+
 ## Docker & Docker Compose (One-Command Run)
 
 Run the entire system in an isolated container:
