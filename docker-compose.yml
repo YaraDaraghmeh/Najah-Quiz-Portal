@@ -1,0 +1,19 @@
+services:
+  najah-quiz-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: najah-amman-portal
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - DATABASE_URL=file:/app/data/dev.db
+      - SESSION_SECRET=${SESSION_SECRET:-change-this-session-secret}
+    volumes:
+      - sqlite_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:
