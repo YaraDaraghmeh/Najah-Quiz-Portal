@@ -3,7 +3,6 @@
 This document records the architectural decisions, client requirements analysis, assumptions, and engineering rationale for the **Najah Tutoring Centre Portal (Amman)**.
 
 ---
-
 Architecture & File Structure
 ```
 ├── prisma/
@@ -45,6 +44,7 @@ Architecture & File Structure
 ├── DECISIONS.md            # Technical decisions and architectural log
 ├── CLAUDE.md               # Project conventions
 └── README.md               # Quickstart, demo credentials, and test instructions
+```
 
 ## 1. Core Architecture & Technology Stack
 
