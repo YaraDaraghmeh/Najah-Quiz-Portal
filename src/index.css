@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Cairo', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: #fafaf9;
+    color: #1c1917;
+    min-height: 100vh;
+  }
+}
+
+/* Logical property helpers and touch target enforcement */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
