@@ -4,6 +4,48 @@ This document records the architectural decisions, client requirements analysis,
 
 ---
 
+Architecture & File Structure
+```
+├── prisma/
+│   ├── schema.prisma       # Relational models (SQLite)
+│   └── seed.ts             # Realistic Amman centre seed dataset
+├── lib/
+│   ├── db.ts               # PrismaClient singleton
+│   ├── scoring.ts          # Pure scoring function (+points, -penalty%, 0 floor)
+│   ├── scoring.test.ts     # Vitest tests for scoring
+│   ├── attempts.ts         # Server-authoritative timer and deadline logic
+│   ├── attempts.test.ts    # Vitest tests for deadline & grace period
+│   ├── import.ts           # Excel/CSV validation routines
+│   ├── import.test.ts      # Vitest tests for imports
+│   └── auth.ts             # Bcrypt hashing and HMAC-SHA256 signed cookies
+├── server/
+│   ├── types.ts            # AuthRequest and backend interfaces
+│   ├── middleware/
+│   │   └── auth.ts         # Session auth, role verification, and rate limiting
+│   ├── services/
+│   │   └── attempt.service.ts # Attempt evaluation & lazy finalization logic
+│   └── routes/
+│       ├── index.ts        # Central API router mounting all modules
+│       ├── auth.routes.ts  # Login, session verification, demo users, logout
+│       ├── student.routes.ts # Student quizzes, attempts, autosave, submission
+│       ├── teacher.routes.ts # Teacher quiz editor, stats, results, CSV export
+│       ├── admin.routes.ts # User & class management CRUD
+│       ├── import.routes.ts# Excel/CSV preview & batch commit
+│       └── status.routes.ts# System health & verification metrics
+├── src/
+│   ├── types/
+│   │   └── index.ts        # Shared TypeScript interfaces & domain models
+│   ├── components/         # Modular React UI components
+│   ├── lib/
+│   │   └── api.ts          # API fetch client
+│   ├── App.tsx             # Interactive review dashboard & frontend root
+│   ├── main.tsx            # React root mount
+│   └── index.css           # Tailwind CSS + Cairo/Plus Jakarta Sans typography
+├── server.ts               # Express entrypoint with Vite dev middlewares
+├── DECISIONS.md            # Technical decisions and architectural log
+├── CLAUDE.md               # Project conventions
+└── README.md               # Quickstart, demo credentials, and test instructions
+
 ## 1. Core Architecture & Technology Stack
 
 ### A. Full-Stack Node/Express + Vite SPA + Prisma SQLite
